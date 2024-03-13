@@ -1,7 +1,7 @@
-#define int1 2 // F_AMARELO
-#define int2 4 // F_BRANCO1
-#define int3 7 // F_CINZA
-#define int4 8 // F_BRANCO2
+#define int1 3 // F_VERDE
+#define int2 5 // F_BRANCO1
+#define int3 9 // F_CINZA
+#define int4 10 // F_BRANCO2
 
 
 
