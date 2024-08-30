@@ -29,7 +29,7 @@ class clientes:
         for c in cls.objetos:
             if c.id == id:
                 return c
-        return None # porque esse return none?
+        return None 
         
     @classmethod
     def listar(cls):
@@ -39,7 +39,7 @@ class clientes:
     @classmethod
     def atualizar(cls,obj):
         c = cls.listar_id(obj.id)
-        if c != None: #nao entendi esse if com o None
+        if c != None: #se o id existir, ou seja, diferente de None, o cliente será atualizado
             c.nome = obj.nome
             c.email = obj.email
             c.fone = obj.fone
