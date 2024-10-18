@@ -20,9 +20,9 @@ class Bhaskara:
     def raiz1(self):
         if self.TemRaizesReais():
             return (-self.__b + math.sqrt(self.__delta)) / (2 * self.__a)
-        return None
+        return True
 
     def raiz2(self):
         if self.TemRaizesReais():
             return (-self.__b - math.sqrt(self.__delta)) / (2 * self.__a)
-        return None
+        return False
