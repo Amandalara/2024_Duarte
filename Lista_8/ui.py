@@ -1,60 +1,83 @@
-#from cliente import Cliente, Clientes
-#from horario import Horario, Horarios
-import Lista_8.views as views
-from datetime import datetime
-
+import streamlit as st
+from cliente import Cliente,Clientes
 class UI:
-  @staticmethod
-  def menu():
-    print("Cadastro de Clientes")
-    print("  1 - Inserir, 2 - Listar, 3 - Atualizar , 4 - Excluir")
-    print("Cadastro de Horários")
-    print("  5 - Inserir, 6 - Listar, 7 - Atualizar , 8 - Excluir")
-    print("Outras opções")
-    print("  9 - Fim")
+    @classmethod
+    def main(cls):
+        st.header("Cadastro de Clientes")
+        tab_listar, tab_inserir, tab_atualizar, tab_deletar = st.tabs(["Listar", "Inserir", "Atualizar", "Deletar"])
 
-    return int(input("Informe uma opção: "))
+        with tab_inserir:
+            cls.cliente_inserir()
 
-  @staticmethod
-  def main():
-    op = 0
-    while op != 9:
-      op = UI.menu()
-      if op == 1: UI.cliente_inserir()
-      if op == 2: UI.cliente_listar()
-      if op == 3: UI.cliente_atualizar()
-      if op == 4: UI.cliente_excluir()
-      if op == 5: UI.horario_inserir()
-      if op == 6: UI.horario_listar()
-      if op == 7: UI.horario_atualizar()
-      if op == 8: UI.horario_excluir()
+        with tab_listar:
+            cls.cliente_listar()
 
-  @staticmethod
-  def cliente_inserir():
-    nome = input("Informe o nome: ")
-    email = input("Informe o e-mail: ")
-    fone = input("Informe o fone: ")  
-    views.cliente_inserir(nome, email, fone)
+        with tab_atualizar:
+            cls.cliente_atualizar()
 
-  @staticmethod
-  def cliente_listar():  
-    for c in views.cliente_listar():
-      print(c)
+        with tab_deletar:
+            cls.cliente_excluir()
+    @classmethod
+    def cliente_inserir(cls):
+        st.title("Inserir Cliente")
+        with st.form("Inserir clientes"):
+            nome = st.text_input("Nome")
+            email = st.text_input("Email")
+            fone = st.text_input("Telefone")
+            enviar = st.form_submit_button("Inserir")
 
-  @staticmethod
-  def cliente_atualizar():
-    UI.cliente_listar()
-    id = int(input("Informe o id do cliente a ser atualizado: "))
-    nome = input("Informe o novo nome: ")
-    email = input("Informe o novo e-mail: ")
-    fone = input("Informe o novo fone: ")
-    views.cliente_atualizar(id, nome, email, fone)
+            if enviar:
+                if nome and email and fone:
+                    try:
+                        novo_cliente = Cliente(0, nome, email, fone)
+                        Clientes.inserir(novo_cliente)
+                        st.success("Cliente inserido!")
+                    except ValueError:
+                        st.error("Dado inválido!")
+                else:
+                    st.warning("Todos os campos são obrigatórios.")
 
-  @staticmethod
-  def cliente_excluir():
-    UI.cliente_listar()
-    id = int(input("Informe o id do cliente a ser excluído: "))
-    views.cliente_inserir(id)
+    @classmethod
+    def cliente_listar(cls):
+        st.title("Listar Clientes")
+        clientes = Clientes.listar()
+        for c in clientes:
+            st.write(c)
 
-  
-UI.main()
+    @classmethod
+    def cliente_atualizar(cls):
+        st.title("Atualizar Cliente")
+        clientes = Clientes.listar()
+        cliente_nomes = [c.get_nome() for c in clientes]
+
+        selected_cliente_nome = st.selectbox("Selecionar Cliente", cliente_nomes)
+        cliente = next((c for c in clientes if c.get_nome() == selected_cliente_nome), None)
+
+        if cliente:
+            novo_nome = st.text_input("Novo Nome", cliente.get_nome())
+            novo_email = st.text_input("Novo Email", cliente.get_email())
+            novo_fone = st.text_input("Novo Telefone", cliente.get_fone())
+            enviar = st.button("Atualizar")
+
+            if enviar:
+                if novo_nome and novo_email and novo_fone:
+                    try:
+                        cliente_atualizado = Cliente(cliente.get_id(), novo_nome, novo_email, novo_fone)
+                        Clientes.atualizar(cliente_atualizado)
+                        st.success("Cliente atualizado!")
+                    except ValueError:
+                        st.error("Dado inválido!")
+
+    @classmethod
+    def cliente_excluir(cls):
+        st.title("Deletar Cliente")
+        clientes = Clientes.listar()
+        cliente_nomes = [c.get_nome() for c in clientes]
+
+        selected_cliente_nome = st.selectbox("Selecionar Cliente para Deletar", cliente_nomes)
+        cliente = next((c for c in clientes if c.get_nome() == selected_cliente_nome), None)
+
+        if cliente:
+            if st.button("Deletar"):
+                Clientes.excluir(cliente)
+                st.success("Cliente excluído!")
