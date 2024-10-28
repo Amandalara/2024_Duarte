@@ -8,7 +8,6 @@ class UI:
         print("5 - Sair")
         return int(input("Enter the option:"))
 
-    
 
     @staticmethod 
     def main():
@@ -25,13 +24,26 @@ class UI:
         name = input("Enter your name:")
         email = input("Enter your name:")
         phone = input("Enter your name:")
+        view.clients_insert(name, email, phone)
         
 
     @staticmethod
     def list_clients():
+        for c in view.clients_list():
+            print(c)
 
     @staticmethod
     def update_clients():
+        UI.list_clients()
+        id = int(input("Enter with person id:"))
+        name = input("Enter your new name:")
+        email = input("Enter your new email:")
+        phone = input("Enter your new phone:")
+        view.clients_update(id, name, email, phone)
+        
 
     @staticmethod
     def delete_clients():
+        UI.list_clients()
+        id = int(input("Enter with person id:"))
+        view.clients_delete(id)
